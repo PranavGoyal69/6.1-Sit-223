@@ -14,10 +14,11 @@ pipeline {
                 script {
                     try {
                         // Example build command for Windows
-                        bat 'echo Building the project'
-                        bat 'echo Build successful' // Simulate build success
+                        bat 'echo Building the project > build.log'
+                        bat 'echo Build successful >> build.log'
                     } catch (Exception e) {
                         echo "Build failed: ${e.getMessage()}"
+                        bat 'echo Build failed: ${e.getMessage()} >> build.log'
                         currentBuild.result = 'FAILURE'
                         error("Build failed")
                     }
@@ -33,9 +34,10 @@ pipeline {
                 script {
                     try {
                         // Simulate running tests
-                        bat 'echo Running unit and integration tests'
+                        bat 'echo Running unit and integration tests >> build.log'
                     } catch (Exception e) {
                         echo "Tests failed: ${e.getMessage()}"
+                        bat 'echo Tests failed: ${e.getMessage()} >> build.log'
                         currentBuild.result = 'FAILURE'
                         error("Tests failed")
                     }
@@ -51,9 +53,10 @@ pipeline {
                 script {
                     try {
                         // Simulate code analysis
-                        bat 'echo Running code analysis'
+                        bat 'echo Running code analysis >> build.log'
                     } catch (Exception e) {
                         echo "Code analysis failed: ${e.getMessage()}"
+                        bat 'echo Code analysis failed: ${e.getMessage()} >> build.log'
                         currentBuild.result = 'FAILURE'
                         error("Code analysis failed")
                     }
@@ -69,9 +72,10 @@ pipeline {
                 script {
                     try {
                         // Simulate security scan
-                        bat 'echo Running security scan'
+                        bat 'echo Running security scan >> build.log'
                     } catch (Exception e) {
                         echo "Security scan failed: ${e.getMessage()}"
+                        bat 'echo Security scan failed: ${e.getMessage()} >> build.log'
                         currentBuild.result = 'FAILURE'
                         error("Security scan failed")
                     }
@@ -87,9 +91,10 @@ pipeline {
                 script {
                     try {
                         // Simulate deployment to staging
-                        bat 'echo Deploying to staging'
+                        bat 'echo Deploying to staging >> build.log'
                     } catch (Exception e) {
                         echo "Staging deployment failed: ${e.getMessage()}"
+                        bat 'echo Staging deployment failed: ${e.getMessage()} >> build.log'
                         currentBuild.result = 'FAILURE'
                         error("Staging deployment failed")
                     }
@@ -105,9 +110,10 @@ pipeline {
                 script {
                     try {
                         // Simulate integration tests on staging
-                        bat 'echo Running integration tests on staging'
+                        bat 'echo Running integration tests on staging >> build.log'
                     } catch (Exception e) {
                         echo "Integration tests on staging failed: ${e.getMessage()}"
+                        bat 'echo Integration tests on staging failed: ${e.getMessage()} >> build.log'
                         currentBuild.result = 'FAILURE'
                         error("Integration tests on staging failed")
                     }
@@ -123,9 +129,10 @@ pipeline {
                 script {
                     try {
                         // Simulate deployment to production
-                        bat 'echo Deploying to production'
+                        bat 'echo Deploying to production >> build.log'
                     } catch (Exception e) {
                         echo "Production deployment failed: ${e.getMessage()}"
+                        bat 'echo Production deployment failed: ${e.getMessage()} >> build.log'
                         currentBuild.result = 'FAILURE'
                         error("Production deployment failed")
                     }
@@ -138,7 +145,7 @@ pipeline {
         always {
             script {
                 // Collect and archive logs
-                archiveArtifacts artifacts: '**/*.log', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'build.log', allowEmptyArchive: true
             }
         }
         success {
@@ -147,7 +154,7 @@ pipeline {
                 body: '''<p>Build completed successfully.</p>
                          <p>See attached logs for more details.</p>''',
                 to: 'gpranav2901@gmail.com',
-                attachLog: true
+                attachmentsPattern: 'build.log'
             )
         }
         failure {
@@ -156,7 +163,7 @@ pipeline {
                 body: '''<p>Build failed. Please check the logs.</p>
                          <p>See attached logs for more details.</p>''',
                 to: 'gpranav2901@gmail.com',
-                attachLog: true
+                attachmentsPattern: 'build.log'
             )
         }
     }
